@@ -34,5 +34,5 @@ jobs:
       - run: ./roc_nightly/roc version
 
       # Run all tests 
-      - run: ROC=./roc_nightly/roc ./ci/run_tests.sh
+      - run: ROC=./roc_nightly/roc ./ci/run-tests.sh
 
