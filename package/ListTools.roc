@@ -3,7 +3,9 @@ interface ListTools
         cartesianProduct,
         cartesianProduct2,
     ]
-    imports []
+    imports [
+        FuncTools.{ partial2Takes1Backwards },
+    ]
 
 # TODO: Fix resulting ordering via List.append and List.concatenate.
 cartesianProduct : List (List a) -> List (List a)
@@ -12,7 +14,7 @@ cartesianProduct = \list ->
         when state is
             [] -> List.chunksOf sublist 1
             _ ->
-                List.map sublist (\elem -> List.map state (\head -> List.append head elem))
+                List.map sublist (\elem -> List.map state (partial2Takes1Backwards List.append elem))
                 |> List.join
 
     List.walk list [] update
