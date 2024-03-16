@@ -13,9 +13,10 @@ cmpU8BasedHelp : List U8, List U8 -> [LT, EQ, GT]
 cmpU8BasedHelp = \s1, s2 ->
     when s1 is
         [] ->
-            when s2 is 
+            when s2 is
                 [] -> EQ
                 _ -> LT
+
         [c1, ..] ->
             when s2 is
                 [] -> GT
@@ -23,6 +24,7 @@ cmpU8BasedHelp = \s1, s2 ->
                     when Num.compare c1 c2 is
                         EQ ->
                             cmpU8BasedHelp (List.dropFirst s1 1) (List.dropFirst s2 1)
+
                         cmp -> cmp
 
 expect cmpU8Based "" "" == EQ
@@ -41,8 +43,9 @@ formatFWithTrailingZerosMaybeTrim = \v, numZeros ->
     vStr = Num.toStr v
     vListUtf8 = Str.toUtf8 vStr
 
-    after = List.splitFirst vListUtf8 46
-        |> Result.withDefault {before: [], after: []}
+    after =
+        List.splitFirst vListUtf8 46
+        |> Result.withDefault { before: [], after: [] }
         |> .after
 
     lenAfter = List.len after
@@ -50,10 +53,12 @@ formatFWithTrailingZerosMaybeTrim = \v, numZeros ->
     when Num.compare numZeros lenAfter is
         EQ ->
             vStr
+
         LT ->
             List.dropLast vListUtf8 (lenAfter - numZeros)
-                |> Str.fromUtf8
-                |> Result.withDefault ""
+            |> Str.fromUtf8
+            |> Result.withDefault ""
+
         GT ->
             maybeDecimalPoint =
                 when lenAfter is
@@ -73,10 +78,12 @@ fmtFWithTrailingZerosMaybeTrim = \v, numZeros ->
                 when elem is
                     48 -> ([], Bool.true)
                     _ -> (list, Bool.false)
+
             _ -> (list, Bool.false)
 
-    (afterPoint, shouldDropFromStr) = List.splitFirst vListUtf8 46
-        |> Result.withDefault {before: [], after: []}
+    (afterPoint, shouldDropFromStr) =
+        List.splitFirst vListUtf8 46
+        |> Result.withDefault { before: [], after: [] }
         |> .after
         |> dropOnlyElemIfZero
 
@@ -85,14 +92,15 @@ fmtFWithTrailingZerosMaybeTrim = \v, numZeros ->
     prefix =
         if shouldDropFromStr then
             List.dropLast vListUtf8 2
-                |> Str.fromUtf8
-                |> Result.withDefault ""
+            |> Str.fromUtf8
+            |> Result.withDefault ""
         else
             vStr
 
     when Num.compare numZeros lenAfterPoint is
         EQ ->
             prefix
+
         LT ->
             diff = lenAfterPoint - numZeros
             toDrop =
@@ -102,8 +110,9 @@ fmtFWithTrailingZerosMaybeTrim = \v, numZeros ->
                     diff
 
             List.dropLast vListUtf8 toDrop
-                |> Str.fromUtf8
-                |> Result.withDefault ""
+            |> Str.fromUtf8
+            |> Result.withDefault ""
+
         GT ->
             maybeDecimalPoint =
                 when lenAfterPoint is
@@ -139,7 +148,6 @@ expect
 
 expect
     fmtFWithTrailingZerosMaybeTrim 8 1 == "8.0"
-
 
 expect
     eightF32 : F32
