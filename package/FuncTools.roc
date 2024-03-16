@@ -2,8 +2,11 @@ interface FuncTools
     exposes [
         curry2,
         curry3,
+        curry3Backwards,
         curry4,
+        curry4Backwards,
         curry5,
+        curry5Backwards,
         partial2Takes1,
         partial3Takes1,
         partial3Takes2,
@@ -53,11 +56,20 @@ curry2 = partial2Takes1
 curry3 : (a, b, c -> d), a -> (b -> (c -> d))
 curry3 = \f, a -> \b -> \c -> f a b c
 
+curry3Backwards : (a, b, c -> d), c -> (b -> (a -> d))
+curry3Backwards = \f, c -> \b -> \a -> f a b c
+
 curry4 : (a, b, c, d -> e), a -> (b -> (c -> (d -> e)))
 curry4 = \f, a -> \b -> \c -> \d -> f a b c d
 
+curry4Backwards : (a, b, c, d -> e), d -> (c -> (b -> (a -> e)))
+curry4Backwards = \f, d -> \c -> \b -> \a -> f a b c d
+
 curry5 : (a, b, c, d, e -> f), a -> (b -> (c -> (d -> (e -> f))))
 curry5 = \f, a -> \b -> \c -> \d -> \e -> f a b c d e
+
+curry5Backwards : (a, b, c, d, e -> f), e -> (d -> (c -> (b -> (a -> f))))
+curry5Backwards = \f, e -> \d -> \c -> \b -> \a -> f a b c d e
 
 expect
     sum = \a, b -> a + b
