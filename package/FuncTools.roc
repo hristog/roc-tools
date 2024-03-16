@@ -8,8 +8,11 @@ interface FuncTools
         curry5,
         curry5Backwards,
         partial2Takes1,
+        partial2Takes1Backwards,
         partial3Takes1,
+        partial3Takes1Backwards,
         partial3Takes2,
+        partial3Takes2Backwards,
         partial4Takes1,
         partial4Takes2,
         partial4Takes3,
@@ -24,11 +27,20 @@ interface FuncTools
 partial2Takes1 : (a, b -> c), a -> (b -> c)
 partial2Takes1 = \f, a -> \b -> f a b
 
+partial2Takes1Backwards : (a, b -> c), b -> (a -> c)
+partial2Takes1Backwards = \f, b -> \a -> f a b
+
 partial3Takes1 : (a, b, c -> d), a -> (b, c -> d)
 partial3Takes1 = \f, a -> \b, c -> f a b c
 
+partial3Takes1Backwards : (a, b, c -> d), c -> (a, b -> d)
+partial3Takes1Backwards = \f, c -> \a, b -> f a b c
+
 partial3Takes2 : (a, b, c -> d), a, b -> (c -> d)
 partial3Takes2 = \f, a, b -> \c -> f a b c
+
+partial3Takes2Backwards : (a, b, c -> d), b, c -> (a -> d)
+partial3Takes2Backwards = \f, b, c -> \a -> f a b c
 
 partial4Takes1 : (a, b, c, d -> e), a -> (b, c, d -> e)
 partial4Takes1 = \f, a -> \b, c, d -> f a b c d
