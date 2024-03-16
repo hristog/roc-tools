@@ -7,6 +7,8 @@ interface FuncTools
         curry4Backwards,
         curry5,
         curry5Backwards,
+        flipArgs2,
+        flipArgs3,
         partial2Takes1,
         partial2Takes1Backwards,
         partial3Takes1,
@@ -23,6 +25,12 @@ interface FuncTools
         partial5Takes4,
     ]
     imports []
+
+flipArgs2 : (a, b -> c), b, a -> c
+flipArgs2 = \f, b, a -> f a b
+
+flipArgs3 : (a, b, c -> d), c, b, a -> d
+flipArgs3 = \f, c, b, a -> f a b c
 
 partial2Takes1 : (a, b -> c), a -> (b -> c)
 partial2Takes1 = \f, a -> \b -> f a b
