@@ -109,3 +109,16 @@ expect
     a = [10, 20]
     b = ['A', 'B', 'C']
     cartesianProduct2 a b == [(10, 'A'), (10, 'B'), (10, 'C'), (20, 'A'), (20, 'B'), (20, 'C')]
+
+# TODO: Make this generic, in terms of the number of elements in each combination.
+combinations2 : List a -> List (List a)
+combinations2 = \list ->
+    updateCombinations = \state, u, idx ->
+        List.concat state (List.map (List.dropFirst list (idx + 1)) (\v -> [u, v]))
+    List.walkWithIndex list [] updateCombinations
+
+expect
+    list = [1,2,3,4,5]
+    expected = [[1, 2], [1, 3], [1, 4], [1, 5], [2, 3], [2, 4], [2, 5], [3, 4], [3, 5], [4, 5]]
+    actual = combinations2 list
+    actual == expected
