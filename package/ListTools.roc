@@ -1,6 +1,7 @@
 interface ListTools
     exposes [
-        cartesianProduct2
+        cartesianProduct,
+        cartesianProduct2,
     ]
     imports []
 
