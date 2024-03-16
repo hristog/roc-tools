@@ -5,7 +5,6 @@ interface ListTools
     ]
     imports []
 
-
 # TODO: Fix resulting ordering via List.append and List.concatenate.
 cartesianProduct : List (List a) -> List (List a)
 cartesianProduct = \list ->
@@ -14,7 +13,7 @@ cartesianProduct = \list ->
             [] -> List.chunksOf sublist 1
             _ ->
                 List.map sublist (\elem -> List.map state (\head -> List.append head elem))
-                    |> List.join
+                |> List.join
 
     List.walk list [] update
 
@@ -118,7 +117,7 @@ combinations2 = \list ->
     List.walkWithIndex list [] updateCombinations
 
 expect
-    list = [1,2,3,4,5]
+    list = [1, 2, 3, 4, 5]
     expected = [[1, 2], [1, 3], [1, 4], [1, 5], [2, 3], [2, 4], [2, 5], [3, 4], [3, 5], [4, 5]]
     actual = combinations2 list
     actual == expected
