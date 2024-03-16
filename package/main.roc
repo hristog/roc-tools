@@ -1,6 +1,7 @@
 package "roctools"
-	exposes [
-		StrTools,
-	]
-	packages {}
+    exposes [
+        ListTools,
+        StrTools,
+    ]
+    packages {}
 
