@@ -10,13 +10,13 @@ interface ListTools
 # TODO: Fix resulting ordering via List.append and List.concatenate.
 cartesianProduct : List (List a) -> List (List a)
 cartesianProduct = \list ->
-    update = \state, sublist ->
+    appendProducts = \state, sublist ->
         when state is
             [] -> List.chunksOf sublist 1
             _ ->
                 List.joinMap sublist (\elem -> List.map state (partial2Takes1Backwards List.append elem))
 
-    List.walk list [] update
+    List.walk list [] appendProducts
 
 expect
     ab = [[]]
