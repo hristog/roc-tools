@@ -14,8 +14,7 @@ cartesianProduct = \list ->
         when state is
             [] -> List.chunksOf sublist 1
             _ ->
-                List.map sublist (\elem -> List.map state (partial2Takes1Backwards List.append elem))
-                |> List.join
+                List.joinMap sublist (\elem -> List.map state (partial2Takes1Backwards List.append elem))
 
     List.walk list [] update
 
