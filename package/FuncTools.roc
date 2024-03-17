@@ -35,6 +35,13 @@ flipArgs3 = \f, c, b, a -> f a b c
 partial2Takes1 : (a, b -> c), a -> (b -> c)
 partial2Takes1 = \f, a -> \b -> f a b
 
+expect
+    sum = \a, b -> a + b
+    add100 = partial2Takes1 sum 100
+    expected = 150
+    actual = add100 50
+    actual == expected
+
 partial2Takes1Backwards : (a, b -> c), b -> (a -> c)
 partial2Takes1Backwards = \f, b -> \a -> f a b
 
@@ -90,10 +97,3 @@ curry5 = \f, a -> \b -> \c -> \d -> \e -> f a b c d e
 
 curry5Backwards : (a, b, c, d, e -> f), e -> (d -> (c -> (b -> (a -> f))))
 curry5Backwards = \f, e -> \d -> \c -> \b -> \a -> f a b c d e
-
-expect
-    sum = \a, b -> a + b
-    add100 = partial2Takes1 sum 100
-    expected = 150
-    actual = add100 50
-    actual == expected
