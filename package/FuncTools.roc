@@ -1,5 +1,6 @@
 interface FuncTools
     exposes [
+        compose,
         compose2With2,
         compose2With3,
         compose2With4,
@@ -36,6 +37,8 @@ interface FuncTools
         partial5Takes4,
     ]
     imports []
+
+compose = \f, g -> \a -> g a |> f
 
 compose2With2 = \f, g ->
     \a, b -> g a b |> f
