@@ -1,6 +1,15 @@
 interface FuncTools
     exposes [
+        compose2With2,
+        compose2With3,
+        compose2With4,
+        compose2With5,
+        compose3With2,
+        compose3With3,
+        compose3With4,
+        compose3With5,
         curry2,
+        curry2Backwards,
         curry3,
         curry3Backwards,
         curry4,
@@ -27,6 +36,30 @@ interface FuncTools
         partial5Takes4,
     ]
     imports []
+
+compose2With2 = \f, g ->
+    \a, b -> g a b |> f
+
+compose2With3 = \f, g ->
+    \a, b, c -> g a b c |> f
+
+compose2With4 = \f, g ->
+    \a, b, c, d -> g a b c d |> f
+
+compose2With5 = \f, g ->
+    \a, b, c, d, e -> g a b c d e |> f
+
+compose3With2 = \f, g, h ->
+    \a, b -> h a b |> g |> f
+
+compose3With3 = \f, g, h ->
+    \a, b, c -> h a b c |> g |> f
+
+compose3With4 = \f, g, h ->
+    \a, b, c, d -> g a b c d |> g |> f
+
+compose3With5 = \f, g, h ->
+    \a, b, c, d, e -> h a b c d e |> g |> f
 
 flip2 : (a, b -> c), b, a -> c
 flip2 = \f, b, a -> f a b
@@ -87,6 +120,7 @@ partial5Takes4 : (a, b, c, d, e -> f), a, b, c, d -> (e -> f)
 partial5Takes4 = \f, a, b, c, d -> \e -> f a b c d e
 
 curry2 = partial2Takes1
+curry2Backwards = partial2Takes1Backwards
 
 curry3 : (a, b, c -> d), a -> (b -> (c -> d))
 curry3 = \f, a -> \b -> \c -> f a b c
