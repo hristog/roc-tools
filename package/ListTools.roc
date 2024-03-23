@@ -2,6 +2,8 @@ interface ListTools
     exposes [
         cartesianProduct,
         cartesianProduct2,
+        combinations2,
+        count,
         maxWithDefault,
     ]
     imports [
@@ -122,6 +124,29 @@ expect
     list = [1, 2, 3, 4, 5]
     expected = [[1, 2], [1, 3], [1, 4], [1, 5], [2, 3], [2, 4], [2, 5], [3, 4], [3, 5], [4, 5]]
     actual = combinations2 list
+    actual == expected
+
+count : List a -> Dict a U64
+count = \xs ->
+    updateCount = \c ->
+        when c is
+            Missing -> Present 1
+            Present curr -> Present (curr + 1)
+
+    List.walk xs (Dict.empty {}) \counts, x -> Dict.update counts x updateCount
+
+expect
+    list = [1, 1, 5, 5, 5, 8, 10, 11, 88, 88, 88, 88, 88]
+    expected =
+        Dict.empty {}
+        |> Dict.insert 1 2
+        |> Dict.insert 5 3
+        |> Dict.insert 8 1
+        |> Dict.insert 10 1
+        |> Dict.insert 11 1
+        |> Dict.insert 88 5
+
+    actual = count list
     actual == expected
 
 maxWithDefault : List (Num a), Num a -> Num a
