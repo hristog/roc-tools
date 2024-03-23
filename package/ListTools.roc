@@ -2,6 +2,7 @@ interface ListTools
     exposes [
         cartesianProduct,
         cartesianProduct2,
+        maxWithDefault,
     ]
     imports [
         FuncTools.{ partial2Takes1Backwards },
@@ -122,3 +123,8 @@ expect
     expected = [[1, 2], [1, 3], [1, 4], [1, 5], [2, 3], [2, 4], [2, 5], [3, 4], [3, 5], [4, 5]]
     actual = combinations2 list
     actual == expected
+
+maxWithDefault : List (Num a), Num a -> Num a
+maxWithDefault = \list, default ->
+    List.max list |> Result.withDefault default
+
