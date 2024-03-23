@@ -59,7 +59,7 @@ compose3With3 = \f, g, h ->
     \a, b, c -> h a b c |> g |> f
 
 compose3With4 = \f, g, h ->
-    \a, b, c, d -> g a b c d |> g |> f
+    \a, b, c, d -> h a b c d |> g |> f
 
 compose3With5 = \f, g, h ->
     \a, b, c, d, e -> h a b c d e |> g |> f
