@@ -1,13 +1,21 @@
 interface NumTools
     exposes [
         exp,
+        divMod,
         # log,
         # log2,
         # log10,
-        nthroot,
+        nthRoot,
         square,
     ]
     imports []
+
+divMod : Int a, Int a -> (Int a, Int a)
+divMod = \a, b ->
+    (
+        Num.divTrunc a b,
+        Num.rem a b,
+    )
 
 square : Num a -> Num a
 square = \n -> n * n
