@@ -1,3 +1,6 @@
+check:
+	roc check ./package/main.roc
+
 format:
 	roc format .
 
