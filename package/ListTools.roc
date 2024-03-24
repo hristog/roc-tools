@@ -4,7 +4,10 @@ interface ListTools
         cartesianProduct2,
         combinations2,
         count,
+        enumerate,
+        enumerateStartAt,
         maxWithDefault,
+        mode,
     ]
     imports [
         FuncTools.{ partial2Takes1Backwards },
@@ -126,7 +129,7 @@ expect
     actual = combinations2 list
     actual == expected
 
-count : List a -> Dict a U64
+count : List a -> Dict a U64 where a implements Eq & Hash
 count = \xs ->
     updateCount = \c ->
         when c is
@@ -148,6 +151,28 @@ expect
 
     actual = count list
     actual == expected
+
+enumerate : List a -> List (U64, a)
+enumerate = \list ->
+    List.mapWithIndex list (\elem, i -> (i, elem))
+
+expect
+    expected = [(0, "ABC"), (1, "DEF"), (2, "GHI")]
+    actual = enumerate ["ABC", "DEF", "GHI"]
+    actual == expected
+
+enumerateStartAt : List a, I64 -> List (I64, a)
+enumerateStartAt = \list, j ->
+    List.mapWithIndex list (\elem, i -> ((Num.toI64 i) + j, elem))
+
+expect
+    expected = [(6, "ABC"), (7, "DEF"), (8, "GHI")]
+    actual = enumerateStartAt ["ABC", "DEF", "GHI"] 6
+    actual == expected
+
+mode : List a -> a where a implements Eq & Hash
+mode = \list ->
+    Dict.walk (count list) (0, 0) (\(kMode, vMode), k, v -> if v > vMode then (k, v) else (kMode, vMode))
 
 maxWithDefault : List (Num a), Num a -> Num a
 maxWithDefault = \list, default ->
