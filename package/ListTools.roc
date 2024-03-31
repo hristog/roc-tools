@@ -8,7 +8,7 @@ interface ListTools
         enumerateStartAt,
         headTail,
         maxWithDefault,
-        # mode,
+        mode,
         splitAt,
     ]
     imports [
@@ -205,12 +205,55 @@ expect
         Err ListWasEmpty -> Bool.false
         Ok actual -> actual == expected
 
-# mode : List a -> Result a [ListWasEmpty] where a implements Eq & Hash
-# mode = \list ->
-#     when List.get list 0 is
-#         Err OutOfBounds -> Err ListWasEmpty
-#         Ok first ->
-#             Ok (Dict.walk (count list) (first, 0) (\(kMode, vMode), k, v -> if v > vMode then (k, v) else (kMode, vMode)) |> .0)
+mode : List a -> Result a [ListWasEmpty] where a implements Eq & Hash
+mode = \list ->
+    when List.get list 0 is
+        Err OutOfBounds -> Err ListWasEmpty
+        Ok first ->
+            Dict.walk (count list) (first, 0) \(kMode, vMode), k, v ->
+                if v > vMode then (k, v) else (kMode, vMode)
+            |> .0
+            |> Ok
+
+expect
+    list = []
+    when mode list is
+        Err ListWasEmpty -> Bool.true
+        Ok _ -> Bool.false
+
+expect
+    list = [1]
+    expected = 1
+    when mode list is
+        Err ListWasEmpty -> Bool.false
+        Ok actual -> actual == expected
+expect
+    list = [1, 5]
+    expected = 1
+    when mode list is
+        Err ListWasEmpty -> Bool.false
+        Ok actual -> actual == expected
+
+expect
+    list = [1, 1, 1, 5, 5, 5]
+    expected = 1
+    when mode list is
+        Err ListWasEmpty -> Bool.false
+        Ok actual -> actual == expected
+
+expect
+    list = [1, 1, 1, 3, 3, 3, 5, 5, 5]
+    expected = 1
+    when mode list is
+        Err ListWasEmpty -> Bool.false
+        Ok actual -> actual == expected
+
+expect
+    list = [1, 1, 1, 3, 3, 3, 5, 5, 5, 5]
+    expected = 5
+    when mode list is
+        Err ListWasEmpty -> Bool.false
+        Ok actual -> actual == expected
 
 maxWithDefault : List (Num a), Num a -> Num a
 maxWithDefault = \list, default ->
