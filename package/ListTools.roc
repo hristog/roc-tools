@@ -7,7 +7,11 @@ interface ListTools
         enumerate,
         enumerateStartAt,
         headTail,
+        max,
+        maxIndex,
+        maxIndexWithDefault,
         maxWithDefault,
+        maxWithKey,
         mode,
         splitAt,
     ]
@@ -205,6 +209,53 @@ expect
         Err ListWasEmpty -> Bool.false
         Ok actual -> actual == expected
 
+max : List (Num a) -> Result (Num a) [ListWasEmpty]
+max = \list ->
+    when List.first list is
+        Ok first ->
+            List.walk list first \currMax, elem ->
+                if elem > currMax then elem else currMax
+            |> Ok
+        Err ListWasEmpty -> Err ListWasEmpty
+
+maxIndex : List (Num a) -> Result (U64, Num a) [ListWasEmpty]
+maxIndex = \list ->
+    when List.first list is
+        Ok first ->
+            List.walkWithIndex list (0, first) \(currMaxIdx, currMax), elem, idx ->
+                if elem > currMax then (idx, elem) else (currMaxIdx, currMax)
+            |> Ok
+        Err ListWasEmpty -> Err ListWasEmpty
+
+maxWithDefault : List (Num a), Num a -> Num a
+maxWithDefault = \list, default ->
+    List.max list |> Result.withDefault default
+
+maxIndexWithDefault : List (Num a), U64, Num a -> (U64, Num a)
+maxIndexWithDefault = \list, defaultIdx, default ->
+    when maxIndex list is
+        Ok (idx, v) -> (idx, v)
+        Err ListWasEmpty -> (defaultIdx, default)
+
+maxWithKey : List (Num a), (Num a -> Num *) -> Result (Num a) [ListWasEmpty]
+maxWithKey = \list, key ->
+    when List.map list key |> maxIndex is
+        Ok (idx, _) ->
+            when List.get list idx is
+                Ok maxElem -> Ok maxElem
+                Err OutOfBounds -> crash "Error: The input list length has changed unexpectedly!"
+        Err ListWasEmpty -> Err ListWasEmpty
+
+# TODO: maxIndexWithKey
+# TODO: maxIndexWithDefaultAndKey
+
+expect
+    list = [1, 2, 3, 4, 5]
+    expected = 3
+    when maxWithKey list \n -> if n < 4 then n * n else n + 2 is
+        Err ListWasEmpty -> Bool.false
+        Ok actual -> actual == expected
+
 mode : List a -> Result a [ListWasEmpty] where a implements Eq & Hash
 mode = \list ->
     when List.get list 0 is
@@ -254,10 +305,6 @@ expect
     when mode list is
         Err ListWasEmpty -> Bool.false
         Ok actual -> actual == expected
-
-maxWithDefault : List (Num a), Num a -> Num a
-maxWithDefault = \list, default ->
-    List.max list |> Result.withDefault default
 
 splitAt : List a, U64 -> (List a, List a)
 splitAt = \list, idx ->
