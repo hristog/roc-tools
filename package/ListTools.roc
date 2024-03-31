@@ -376,6 +376,12 @@ expect
     actual = zip list
     actual == expected
 
+expect
+    list = [[1, 4], [2, 5, 16, 17], [3, 6, 18, 19, 20]]
+    expected = [[1, 2, 3], [4, 5, 6]]
+    actual = zip list
+    actual == expected
+
 zip2 : List a, List b -> List (a, b)
 zip2 = \u, v -> List.map2 u v \a, b -> (a, b)
 
