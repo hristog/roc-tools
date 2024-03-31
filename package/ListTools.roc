@@ -3,7 +3,7 @@ interface ListTools
         cartesianProduct,
         cartesianProduct2,
         combinations2,
-        # count,
+        count,
         enumerate,
         enumerateStartAt,
         headTail,
@@ -131,33 +131,35 @@ expect
     actual = combinations2 list
     actual == expected
 
-# count : List a -> Dict a U64 where a implements Eq & Hash
-# count = \xs ->
-#     updateCount = \c ->
-#         when c is
-#             Missing -> Present 1
-#             Present curr -> Present (curr + 1)
+count : List a -> Dict a U64 where a implements Eq & Hash
+count = \xs ->
+    updateCount = \c ->
+        when c is
+            Missing -> Present 1
+            Present curr -> Present (curr + 1)
 
-#     List.walk xs (Dict.empty {}) \counts, x -> Dict.update counts x updateCount
+    List.walk xs (Dict.empty {}) \counts, x -> Dict.update counts x updateCount
 
-# expect
-#     expected = Dict.empty {}
-#     actual = count []
-#     actual == expected
+expect
+    expected = Dict.empty {}
+    emptyList : List Str
+    emptyList = []
+    actual = count emptyList
+    actual == expected
 
-# expect
-#     list = [1, 1, 5, 5, 5, 8, 10, 11, 88, 88, 88, 88, 88]
-#     expected =
-#         Dict.empty {}
-#         |> Dict.insert 1 2
-#         |> Dict.insert 5 3
-#         |> Dict.insert 8 1
-#         |> Dict.insert 10 1
-#         |> Dict.insert 11 1
-#         |> Dict.insert 88 5
+ expect
+     list = [1, 1, 5, 5, 5, 8, 10, 11, 88, 88, 88, 88, 88]
+     expected =
+         Dict.empty {}
+         |> Dict.insert 1 2
+         |> Dict.insert 5 3
+         |> Dict.insert 8 1
+         |> Dict.insert 10 1
+         |> Dict.insert 11 1
+         |> Dict.insert 88 5
 
-#     actual = count list
-#     actual == expected
+     actual = count list
+     actual == expected
 
 enumerate : List a -> List (U64, a)
 enumerate = \list ->
@@ -183,6 +185,25 @@ headTail = \list ->
     when split.before |> List.first is
         Ok head -> Ok (head, split.others)
         Err ListWasEmpty -> Err ListWasEmpty
+expect
+    list = []
+    when headTail list is
+        Err ListWasEmpty -> Bool.true
+        Ok _ -> Bool.false
+
+expect
+    list = ["A"]
+    expected = ("A", [])
+    when headTail list is
+        Err ListWasEmpty -> Bool.false
+        Ok actual -> actual == expected
+
+expect
+    list = ["A", "B", "C", "D"]
+    expected = ("A", ["B", "C", "D"])
+    when headTail list is
+        Err ListWasEmpty -> Bool.false
+        Ok actual -> actual == expected
 
 # mode : List a -> Result a [ListWasEmpty] where a implements Eq & Hash
 # mode = \list ->
@@ -201,10 +222,21 @@ splitAt = \list, idx ->
     (split.before, split.others)
 
 expect
+    expected = ([], [])
+    actual = splitAt [] 1
+    actual == expected
+
+expect
+    expected = ([], [1])
+    actual = splitAt [1] 0
+    actual == expected
+
+expect
+    expected = ([1], [])
+    actual = splitAt [1] 1
+    actual == expected
+
+expect
     expected = ([1], [2, 3, 4])
     actual = splitAt [1, 2, 3, 4] 1
     actual == expected
-
-#expect
-    #{before: x, others: xs} = List.split [1,2,3,4] 1
-    #(x, xs) == ([1], [2,3,4])
