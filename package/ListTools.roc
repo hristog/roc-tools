@@ -15,6 +15,7 @@ interface ListTools
         maxWithKey,
         mode,
         splitAt,
+        zip,
         zip2,
         zip3,
         zip4,
@@ -194,6 +195,7 @@ headTail = \list ->
     when split.before |> List.first is
         Ok head -> Ok (head, split.others)
         Err ListWasEmpty -> Err ListWasEmpty
+
 expect
     list = []
     when headTail list is
@@ -336,6 +338,42 @@ expect
 expect
     expected = ([1], [2, 3, 4])
     actual = splitAt [1, 2, 3, 4] 1
+    actual == expected
+
+zip : List (List a) -> List (List a)
+zip = \llist ->
+    when llist is
+        [[]] -> [[]]
+        _ ->
+            isListEmpty = \list ->
+                when list is
+                    Ok _ -> Bool.false
+                    Err ListWasEmpty -> Bool.true
+
+            headsTails = List.map llist headTail
+
+            if List.any headsTails isListEmpty then
+                []
+            else
+                hts = List.map headsTails \ht ->
+                    when ht is
+                        Ok htOk -> htOk
+                        _ -> crash "Error: All lists are supposed to be non-empty at this point, but it seems at least one of them isn't"
+
+                heads = [List.map hts .0]
+                tails = List.map hts .1
+                List.concat heads (zip tails)
+
+expect
+    list = [[]]
+    expected = [[]]
+    actual = zip list
+    actual == expected
+
+expect
+    list = [[1, 4], [2, 5], [3, 6]]
+    expected = [[1, 2, 3], [4, 5, 6]]
+    actual = zip list
     actual == expected
 
 zip2 : List a, List b -> List (a, b)
