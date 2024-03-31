@@ -3,11 +3,12 @@ interface ListTools
         cartesianProduct,
         cartesianProduct2,
         combinations2,
-        count,
+        # count,
         enumerate,
         enumerateStartAt,
         maxWithDefault,
-        mode,
+        # mode,
+        splitAt,
     ]
     imports [
         FuncTools.{ partial2Takes1Backwards },
@@ -129,28 +130,33 @@ expect
     actual = combinations2 list
     actual == expected
 
-count : List a -> Dict a U64 where a implements Eq & Hash
-count = \xs ->
-    updateCount = \c ->
-        when c is
-            Missing -> Present 1
-            Present curr -> Present (curr + 1)
+# count : List a -> Dict a U64 where a implements Eq & Hash
+# count = \xs ->
+#     updateCount = \c ->
+#         when c is
+#             Missing -> Present 1
+#             Present curr -> Present (curr + 1)
 
-    List.walk xs (Dict.empty {}) \counts, x -> Dict.update counts x updateCount
+#     List.walk xs (Dict.empty {}) \counts, x -> Dict.update counts x updateCount
 
-expect
-    list = [1, 1, 5, 5, 5, 8, 10, 11, 88, 88, 88, 88, 88]
-    expected =
-        Dict.empty {}
-        |> Dict.insert 1 2
-        |> Dict.insert 5 3
-        |> Dict.insert 8 1
-        |> Dict.insert 10 1
-        |> Dict.insert 11 1
-        |> Dict.insert 88 5
+# expect
+#     expected = Dict.empty {}
+#     actual = count []
+#     actual == expected
 
-    actual = count list
-    actual == expected
+# expect
+#     list = [1, 1, 5, 5, 5, 8, 10, 11, 88, 88, 88, 88, 88]
+#     expected =
+#         Dict.empty {}
+#         |> Dict.insert 1 2
+#         |> Dict.insert 5 3
+#         |> Dict.insert 8 1
+#         |> Dict.insert 10 1
+#         |> Dict.insert 11 1
+#         |> Dict.insert 88 5
+
+#     actual = count list
+#     actual == expected
 
 enumerate : List a -> List (U64, a)
 enumerate = \list ->
@@ -170,11 +176,23 @@ expect
     actual = enumerateStartAt ["ABC", "DEF", "GHI"] 6
     actual == expected
 
-mode : List a -> a where a implements Eq & Hash
-mode = \list ->
-    Dict.walk (count list) (0, 0) (\(kMode, vMode), k, v -> if v > vMode then (k, v) else (kMode, vMode))
+# mode : List a -> Result a [ListWasEmpty] where a implements Eq & Hash
+# mode = \list ->
+#     when List.get list 0 is
+#         Err OutOfBounds -> Err ListWasEmpty
+#         Ok first ->
+#             Ok (Dict.walk (count list) (first, 0) (\(kMode, vMode), k, v -> if v > vMode then (k, v) else (kMode, vMode)) |> .0)
 
 maxWithDefault : List (Num a), Num a -> Num a
 maxWithDefault = \list, default ->
     List.max list |> Result.withDefault default
 
+splitAt : List a, U64 -> (List a, List a)
+splitAt = \list, idx ->
+    split = List.split list idx
+    (split.before, split.others)
+
+expect
+    expected = ([1], [2, 3, 4])
+    actual = splitAt [1, 2, 3, 4] 1
+    actual == expected
