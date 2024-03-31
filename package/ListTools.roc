@@ -7,6 +7,7 @@ interface ListTools
         enumerate,
         enumerateStartAt,
         headTail,
+        map5,
         max,
         maxIndex,
         maxIndexWithDefault,
@@ -14,6 +15,10 @@ interface ListTools
         maxWithKey,
         mode,
         splitAt,
+        zip2,
+        zip3,
+        zip4,
+        zip5,
     ]
     imports [
         FuncTools.{ partial2Takes1Backwards },
@@ -209,6 +214,8 @@ expect
         Err ListWasEmpty -> Bool.false
         Ok actual -> actual == expected
 
+map5 : List a, List b, List c, List d, List e, (a, b, c, d, e -> f) -> List f
+
 max : List (Num a) -> Result (Num a) [ListWasEmpty]
 max = \list ->
     when List.first list is
@@ -330,3 +337,15 @@ expect
     expected = ([1], [2, 3, 4])
     actual = splitAt [1, 2, 3, 4] 1
     actual == expected
+
+zip2 : List a, List b -> List (a, b)
+zip2 = \u, v -> List.map2 u v \a, b -> (a, b)
+
+zip3 : List a, List b, List c -> List (a, b, c)
+zip3 = \u, v, w -> List.map3 u v w \a, b, c -> (a, b, c)
+
+zip4 : List a, List b, List c, List d -> List (a, b, c, d)
+zip4 = \u, v, w, x -> List.map4 u v w x \a, b, c, d -> (a, b, c, d)
+
+zip5 : List a, List b, List c, List d, List e -> List (a, b, c, d, e)
+zip5 = \u, v, w, x, y -> map5 u v w x y \a, b, c, d, e -> (a, b, c, d, e)
