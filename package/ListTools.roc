@@ -6,6 +6,7 @@ interface ListTools
         # count,
         enumerate,
         enumerateStartAt,
+        headTail,
         maxWithDefault,
         # mode,
         splitAt,
@@ -176,6 +177,13 @@ expect
     actual = enumerateStartAt ["ABC", "DEF", "GHI"] 6
     actual == expected
 
+headTail : List a -> Result (a, List a) [ListWasEmpty]
+headTail = \list ->
+    split = List.split list 1
+    when split.before |> List.first is
+        Ok head -> Ok (head, split.others)
+        Err ListWasEmpty -> Err ListWasEmpty
+
 # mode : List a -> Result a [ListWasEmpty] where a implements Eq & Hash
 # mode = \list ->
 #     when List.get list 0 is
@@ -196,3 +204,7 @@ expect
     expected = ([1], [2, 3, 4])
     actual = splitAt [1, 2, 3, 4] 1
     actual == expected
+
+#expect
+    #{before: x, others: xs} = List.split [1,2,3,4] 1
+    #(x, xs) == ([1], [2,3,4])
