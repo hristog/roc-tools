@@ -157,19 +157,19 @@ expect
     actual = count emptyList
     actual == expected
 
- expect
-     list = [1, 1, 5, 5, 5, 8, 10, 11, 88, 88, 88, 88, 88]
-     expected =
-         Dict.empty {}
-         |> Dict.insert 1 2
-         |> Dict.insert 5 3
-         |> Dict.insert 8 1
-         |> Dict.insert 10 1
-         |> Dict.insert 11 1
-         |> Dict.insert 88 5
+expect
+    list = [1, 1, 5, 5, 5, 8, 10, 11, 88, 88, 88, 88, 88]
+    expected =
+        Dict.empty {}
+        |> Dict.insert 1 2
+        |> Dict.insert 5 3
+        |> Dict.insert 8 1
+        |> Dict.insert 10 1
+        |> Dict.insert 11 1
+        |> Dict.insert 88 5
 
-     actual = count list
-     actual == expected
+    actual = count list
+    actual == expected
 
 enumerate : List a -> List (U64, a)
 enumerate = \list ->
