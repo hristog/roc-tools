@@ -14,6 +14,7 @@ interface ListTools
         maxWithDefault,
         maxWithKey,
         mode,
+        slice,
         splitAt,
         zip,
         zip2,
@@ -314,6 +315,52 @@ expect
     when mode list is
         Err ListWasEmpty -> Bool.false
         Ok actual -> actual == expected
+
+slice : List elem, U64, U64 -> List elem
+slice = \list, fromInclusive, untilExclusive ->
+    List.sublist list { start : fromInclusive, len : untilExclusive - fromInclusive }
+
+expect
+    list = []
+    expected = []
+    actual = slice list 0 0
+    actual == expected
+
+expect
+    list = []
+    expected = []
+    actual = slice list 5 10
+    actual == expected
+
+expect
+    list = List.range { start: At 0, end: At 9 }
+    expected = []
+    actual = slice list 0 0
+    actual == expected
+
+expect
+    list = List.range { start: At 0, end: At 9 }
+    expected = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    actual = slice list 0 10
+    actual == expected
+
+expect
+    list = List.range { start: At 0, end: At 9 }
+    expected = [5]
+    actual = slice list 5 6
+    actual == expected
+
+expect
+    list = List.range { start: At 0, end: At 9 }
+    expected = [5, 6, 7]
+    actual = slice list 5 8
+    actual == expected
+
+expect
+    list = List.range { start: At 0, end: At 9 }
+    expected = [5, 6, 7, 8, 9]
+    actual = slice list 5 20
+    actual == expected
 
 splitAt : List a, U64 -> (List a, List a)
 splitAt = \list, idx ->
