@@ -289,16 +289,57 @@ maxIndex = \list ->
                 if elem > currMax then (idx, elem) else (currMaxIdx, currMax)
             |> Ok
         Err ListWasEmpty -> Err ListWasEmpty
+expect
+    list = []
+    when maxIndex list is
+        Err ListWasEmpty -> Bool.true
+        Ok _ -> Bool.false
+
+expect
+    list = [1, 1, 2, 3, 3, 5, 5, 5]
+    expected = Ok (5, 5)
+    actual = maxIndex list
+    actual == expected
 
 maxWithDefault : List (Num a), Num a -> Num a
 maxWithDefault = \list, default ->
     List.max list |> Result.withDefault default
+
+expect
+    list = []
+    default = 10
+    expected = default
+    actual = maxWithDefault list default
+    actual == expected
+
+expect
+    list = [1, 1, 2, 3, 3, 5, 5, 5]
+    default = 0
+    expected = 5
+    actual = maxWithDefault list default
+    actual == expected
 
 maxIndexWithDefault : List (Num a), U64, Num a -> (U64, Num a)
 maxIndexWithDefault = \list, defaultIdx, default ->
     when maxIndex list is
         Ok (idx, v) -> (idx, v)
         Err ListWasEmpty -> (defaultIdx, default)
+
+expect
+    list = []
+    defaultIdx = 0
+    default = 10
+    expected = (defaultIdx, default)
+    actual = maxIndexWithDefault list defaultIdx default
+    actual == expected
+
+expect
+    list = [1, 1, 2, 3, 3, 5, 5, 5]
+    defaultIdx = 0
+    default = 0
+    expected = (5, 5)
+    actual = maxIndexWithDefault list defaultIdx default
+    actual == expected
 
 maxWithKey : List (Num a), (Num a -> Num *) -> Result (Num a) [ListWasEmpty]
 maxWithKey = \list, key ->
@@ -309,15 +350,15 @@ maxWithKey = \list, key ->
                 Err OutOfBounds -> crash "Error: The input list length has changed unexpectedly!"
         Err ListWasEmpty -> Err ListWasEmpty
 
-# TODO: maxIndexWithKey
-# TODO: maxIndexWithDefaultAndKey
-
 expect
     list = [1, 2, 3, 4, 5]
     expected = 3
     when maxWithKey list \n -> if n < 4 then n * n else n + 2 is
         Err ListWasEmpty -> Bool.false
         Ok actual -> actual == expected
+
+# TODO: maxIndexWithKey
+# TODO: maxIndexWithDefaultAndKey
 
 mode : List a -> Result a [ListWasEmpty] where a implements Eq & Hash
 mode = \list ->
