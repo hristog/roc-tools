@@ -12,8 +12,9 @@ interface NumTools
 
 divMod : Int a, Int a -> (Int a, Int a)
 divMod = \a, b ->
-    ( Num.divTrunc a b
-    , Num.rem a b
+    (
+        Num.divTrunc a b,
+        Num.rem a b,
     )
 
 square : Num a -> Num a
