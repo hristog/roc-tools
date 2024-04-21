@@ -267,6 +267,7 @@ max = \list ->
             List.walk list first \currMax, elem ->
                 if elem > currMax then elem else currMax
             |> Ok
+
         Err ListWasEmpty -> Err ListWasEmpty
 
 expect
@@ -288,6 +289,7 @@ maxIndex = \list ->
             List.walkWithIndex list (0, first) \(currMaxIdx, currMax), elem, idx ->
                 if elem > currMax then (idx, elem) else (currMaxIdx, currMax)
             |> Ok
+
         Err ListWasEmpty -> Err ListWasEmpty
 expect
     list = []
@@ -348,6 +350,7 @@ maxWithKey = \list, key ->
             when List.get list idx is
                 Ok maxElem -> Ok maxElem
                 Err OutOfBounds -> crash "Error: The input list length has changed unexpectedly!"
+
         Err ListWasEmpty -> Err ListWasEmpty
 
 expect
@@ -412,7 +415,7 @@ expect
 
 slice : List elem, U64, U64 -> List elem
 slice = \list, fromInclusive, untilExclusive ->
-    List.sublist list { start : fromInclusive, len : untilExclusive - fromInclusive }
+    List.sublist list { start: fromInclusive, len: untilExclusive - fromInclusive }
 
 expect
     list = []
