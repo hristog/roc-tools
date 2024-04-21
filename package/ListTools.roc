@@ -526,11 +526,51 @@ expect
 zip2 : List a, List b -> List (a, b)
 zip2 = \u, v -> List.map2 u v \a, b -> (a, b)
 
+expect
+    expected = []
+    actual = zip2 [] [1, 2, 3]
+    actual == expected
+
+expect
+    expected = [(1, 2), (3, 4), (5, 6)]
+    actual = zip2 [1, 3, 5, 7] [2, 4, 6]
+    actual == expected
+
 zip3 : List a, List b, List c -> List (a, b, c)
 zip3 = \u, v, w -> List.map3 u v w \a, b, c -> (a, b, c)
+
+expect
+    expected = []
+    actual = zip3 [] [1, 2, 3] [1]
+    actual == expected
+
+expect
+    expected = [(1, 2, 8), (3, 4, 8), (5, 6, 8)]
+    actual = zip3 [1, 3, 5, 7, 9] [2, 4, 6] [8, 8, 8]
+    actual == expected
 
 zip4 : List a, List b, List c, List d -> List (a, b, c, d)
 zip4 = \u, v, w, x -> List.map4 u v w x \a, b, c, d -> (a, b, c, d)
 
+expect
+    expected = []
+    actual = zip4 [] [1, 2, 3] [] [1, 2]
+    actual == expected
+
+expect
+    expected = [(1, 2, 1, 8), (3, 4, 2, 8), (5, 6, 3, 8)]
+    actual = zip4 [1, 3, 5, 7] [2, 4, 6] [1, 2, 3] [8, 8, 8]
+    actual == expected
+
 zip5 : List a, List b, List c, List d, List e -> List (a, b, c, d, e)
 zip5 = \u, v, w, x, y -> map5 u v w x y \a, b, c, d, e -> (a, b, c, d, e)
+
+expect
+    expected = []
+    actual = zip5 [] [1, 2, 3] [] [] []
+    actual == expected
+
+expect
+    expected = [(1, 2, 1, 4, 8), (3, 4, 2, 5, 8), (5, 6, 3, 6, 8)]
+    actual = zip5 [1, 3, 5, 7] [2, 4, 6] [1, 2, 3] [4, 5, 6] [8, 8, 8]
+    actual == expected
