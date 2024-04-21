@@ -137,6 +137,12 @@ combinations2 = \list ->
     List.walkWithIndex list [] updateCombinations
 
 expect
+    list = []
+    expected = []
+    actual = combinations2 list
+    actual == expected
+
+expect
     list = [1, 2, 3, 4, 5]
     expected = [[1, 2], [1, 3], [1, 4], [1, 5], [2, 3], [2, 4], [2, 5], [3, 4], [3, 5], [4, 5]]
     actual = combinations2 list
@@ -217,8 +223,43 @@ expect
         Err ListWasEmpty -> Bool.false
         Ok actual -> actual == expected
 
+## Run a transformation function on the first element of each list,
+## and use that as the first element in the returned list.
+## Repeat until a list runs out of elements.
+## ```roc
+## fn = \a, _, _, _, _ -> a
+## expect map5 [1, 2, 3, 4] ["A", "B", "C"] [5, 5, 5] ['A', 'B', 'C', 'D', 'E'] [10.0, 15.0, 20.0, 25.0] == [1, 2, 3]
+## ```
 map5 : List a, List b, List c, List d, List e, (a, b, c, d, e -> f) -> List f
+map5 = \a, b, c, d, e, fn ->
+    List.walkWithIndexUntil a [] \result, ai, i ->
+        when List.get b i is
+            Err OutOfBounds -> Break result
+            Ok bi ->
+                when List.get c i is
+                    Err OutOfBounds -> Break result
+                    Ok ci ->
+                        when List.get d i is
+                            Err OutOfBounds -> Break result
+                            Ok di ->
+                                when List.get e i is
+                                    Err OutOfBounds -> Break result
+                                    Ok ei ->
+                                        List.append result (fn ai bi ci di ei) |> Continue
 
+expect
+    fn = \_, _, _, _, _ -> 0
+    expected = []
+    actual = map5 [] [] [] [] [] fn
+    actual == expected
+
+expect
+    fn = \_, _, c, _, _ -> c
+    expected = ['A', 'B', 'C']
+    actual = map5 [1, 2, 8] ["A", "B", "C", "D"] ['A', 'B', 'C'] [3.141529, 1.618033, 2.71828] [Bool.true, Bool.false, Bool.false, Bool.true] fn
+    actual == expected
+
+# TODO: Update to comparable/sortable, once supported in the standard library.
 max : List (Num a) -> Result (Num a) [ListWasEmpty]
 max = \list ->
     when List.first list is
@@ -227,6 +268,18 @@ max = \list ->
                 if elem > currMax then elem else currMax
             |> Ok
         Err ListWasEmpty -> Err ListWasEmpty
+
+expect
+    list = []
+    when max list is
+        Err ListWasEmpty -> Bool.true
+        Ok _ -> Bool.false
+
+expect
+    list = [1, 1, 2, 3, 3, 5, 5, 5]
+    expected = Ok 5
+    actual = max list
+    actual == expected
 
 maxIndex : List (Num a) -> Result (U64, Num a) [ListWasEmpty]
 maxIndex = \list ->
