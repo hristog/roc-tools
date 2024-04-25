@@ -100,6 +100,11 @@ flip5 = \fn, e, d, c, b, a -> fn a b c d e
 identity = \a -> a
 
 expect
+    expected = {}
+    actual = identity {}
+    actual == expected
+
+expect
     expected = 8
     actual = identity 8
     actual == expected
@@ -124,6 +129,13 @@ expect
 
 partial3Takes1 : (a, b, c -> d), a -> (b, c -> d)
 partial3Takes1 = \f, a -> \b, c -> f a b c
+
+expect
+    sum3 = \a, b, c -> a + b + c
+    add10 = partial3Takes1 sum3 10
+    expected = 45
+    actual = add10 15 20
+    actual == expected
 
 partial3Takes1Backwards : (a, b, c -> d), c -> (a, b -> d)
 partial3Takes1Backwards = \f, c -> \a, b -> f a b c
@@ -170,6 +182,14 @@ expect
 
 curry3Backwards : (a, b, c -> d), c -> (b -> (a -> d))
 curry3Backwards = \f, c -> \b -> \a -> f a b c
+
+expect
+    addMul = \a, b, c -> (a + b) * c
+    addMul10 = curry3Backwards addMul 10
+    add5Mul10 = addMul10 5
+    expected = 80
+    actual = add5Mul10 3
+    actual == expected
 
 curry4 : (a, b, c, d -> e), a -> (b -> (c -> (d -> e)))
 curry4 = \f, a -> \b -> \c -> \d -> f a b c d
