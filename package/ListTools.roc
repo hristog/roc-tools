@@ -228,7 +228,7 @@ expect
 ## Repeat until a list runs out of elements.
 ## ```roc
 ## fn = \a, _, _, _, _ -> a
-## expect map5 [1, 2, 3, 4] ["A", "B", "C"] [5, 5, 5] ['A', 'B', 'C', 'D', 'E'] [10.0, 15.0, 20.0, 25.0] == [1, 2, 3]
+## expect map5 [1, 2, 3, 4] ["A", "B", "C"] [5, 5, 5] ['A', 'B', 'C', 'D', 'E'] [10.0, 15.0, 20.0, 25.0] fn == [1, 2, 3]
 ## ```
 map5 : List a, List b, List c, List d, List e, (a, b, c, d, e -> f) -> List f
 map5 = \a, b, c, d, e, fn ->
@@ -251,6 +251,12 @@ expect
     fn = \_, _, _, _, _ -> 0
     expected = []
     actual = map5 [] [] [] [] [] fn
+    actual == expected
+
+expect
+    fn = \a, _, _, _, _ -> a
+    expected = [1, 2, 3]
+    actual = map5 [1, 2, 3, 4] ["A", "B", "C"] [5, 5, 5] ['A', 'B', 'C', 'D', 'E'] [10.0, 15.0, 20.0, 25.0] fn
     actual == expected
 
 expect
