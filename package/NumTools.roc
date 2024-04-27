@@ -53,6 +53,11 @@ expect
     actual = exp 0
     actual == expected
 
+## Return the n'th root of a given number.
+## ```roc
+## expect nthRoot 125 3 == 5.0
+## ```
+nthRoot : Frac a, Frac a -> Frac a
 nthRoot = \x, n -> Num.pow x (1 / n)
 
 # TODO: This results in a Segmentation fault (core dumped).
