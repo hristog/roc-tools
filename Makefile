@@ -9,4 +9,5 @@ test:
 
 docs:
 	roc docs ./package/main.roc
+	find generated-docs/ -type f -name '*.html' -exec sed -i "s/\(href\|src\)=\"\//\1=\"\/docs\/roc-tools\//g" {} +
 
