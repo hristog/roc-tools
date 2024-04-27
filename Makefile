@@ -7,3 +7,6 @@ format:
 test:
 	ROC=`which roc` ci/run-tests.sh
 
+docs:
+	roc docs ./package/main.roc
+
